@@ -30,13 +30,12 @@ post '/linebot/callback' do
 
     word = msg['content']['text']
     data = Word.where(word: word).first
-    answer = (data.nil?) ? "ないよ" : data.description
-
+    msg['content']['text'] = (data.nil?) ? "ないよ" : data.answer
     request_content = {
         to: [msg['content']['from']],
         toChannel: 1383378250, # Fixed  value
         eventType: "138311608800106203", # Fixed value
-        content: answer
+        content: msg['content']
     }
 
     http_client = HTTPClient.new
