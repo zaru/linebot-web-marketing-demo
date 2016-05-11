@@ -17,7 +17,7 @@ post '/linebot/callback' do
         to: [msg['content']['from']],
         toChannel: 1383378250, # Fixed  value
         eventType: "138311608800106203", # Fixed value
-        content: msg['content']['text']
+        content: msg['content']
     }
 
     http_client = HTTPClient.new
@@ -25,9 +25,9 @@ post '/linebot/callback' do
     content_json = request_content.to_json
     http_client.post_content(endpoint_uri, content_json,
                              'Content-Type' => 'application/json; charset=UTF-8',
-                             'X-Line-ChannelID' => ENV['CHANNEL_ID'],
-                             'X-Line-ChannelSecret' => ENV['CHANNEL_SECRET'],
-                             'X-Line-Trusted-User-With-ACL' => ENV['CHANNEL_MID']
+                             'X-Line-ChannelID' => "#{ENV['CHANNEL_ID']}",
+                             'X-Line-ChannelSecret' => "#{ENV['CHANNEL_SECRET']}",
+                             'X-Line-Trusted-User-With-ACL' => "#{ENV['CHANNEL_MID']}"
     )
   end
 
