@@ -8,6 +8,7 @@ require 'cgi/util'
 require 'active_record'
 
 require './models/words.rb'
+require './models/wikipedia.rb'
 
 require 'dotenv'
 Dotenv.load
@@ -21,6 +22,12 @@ get '/' do
   word = params['text']
   data = Word.where(word: word).first
   "#{data.description}" unless data.nil?
+end
+
+get '/wikipedia' do
+  word = params['text']
+  data = Wikipedia.new(word)
+  "output => #{data.description}"
 end
 
 post '/linebot/callback' do
