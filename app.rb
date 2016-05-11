@@ -7,6 +7,8 @@ require 'uri'
 require 'cgi/util'
 require 'active_record'
 
+require './models/words.rb'
+
 require 'dotenv'
 Dotenv.load
 
@@ -15,16 +17,26 @@ ActiveRecord::Base.establish_connection(
     database: "#{ENV['DB_NAME']}"
 )
 
+get '/' do
+  word = params['text']
+  data = Word.where(word: word).first
+  "#{data.description}" unless data.nil?
+end
 
 post '/linebot/callback' do
   params = JSON.parse(request.body.read)
 
   params['result'].each do |msg|
+
+    word = msg['content']['text']
+    data = Word.where(word: word).first
+    answer = (data.nil?) ? "ないよ" : data.description
+
     request_content = {
         to: [msg['content']['from']],
         toChannel: 1383378250, # Fixed  value
         eventType: "138311608800106203", # Fixed value
-        content: msg['content']
+        content: answer
     }
 
     http_client = HTTPClient.new

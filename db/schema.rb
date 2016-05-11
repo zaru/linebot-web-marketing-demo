@@ -11,13 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160511062528) do
+ActiveRecord::Schema.define(version: 20160511070446) do
 
   create_table "words", force: :cascade do |t|
     t.string   "word"
     t.string   "answer"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "description"
+    t.text     "url"
+    t.text     "search_word"
   end
 
 end
