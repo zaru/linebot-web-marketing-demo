@@ -5,9 +5,16 @@ require 'httpclient'
 require 'net/http'
 require 'uri'
 require 'cgi/util'
+require 'active_record'
 
 require 'dotenv'
 Dotenv.load
+
+ActiveRecord::Base.establish_connection(
+    adapter: "sqlite3",
+    database: "#{ENV['DB_NAME']}"
+)
+
 
 post '/linebot/callback' do
   params = JSON.parse(request.body.read)
