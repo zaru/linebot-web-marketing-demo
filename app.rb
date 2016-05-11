@@ -37,7 +37,13 @@ post '/linebot/callback' do
 
     word = msg['content']['text']
     data = Word.where(word: word).first
-    msg['content']['text'] = (data.nil?) ? "ないよ" : data.answer
+    if data.nil?
+      data = Wikipedia.new(word)
+      msg['content']['text'] = data.description[0, 50] + "…\n" + data.url
+    else
+      msg['content']['text'] = data.answer
+    end
+    
     request_content = {
         to: [msg['content']['from']],
         toChannel: 1383378250, # Fixed  value
