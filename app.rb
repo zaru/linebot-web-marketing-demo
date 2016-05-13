@@ -6,9 +6,14 @@ require 'net/http'
 require 'uri'
 require 'cgi/util'
 require 'active_record'
+require 'pry-byebug'
 
 require './models/words.rb'
-require './models/wikipedia.rb'
+require './models/wikipedia_api.rb'
+require './services/word_pipeline.rb'
+require './services/filters/database.rb'
+require './services/filters/wikipedia.rb'
+require './services/filters/ai.rb'
 
 require 'dotenv'
 Dotenv.load
@@ -20,8 +25,8 @@ ActiveRecord::Base.establish_connection(
 
 get '/' do
   word = params['text']
-  data = Word.where(word: word).first
-  "#{data.description}" unless data.nil?
+  pipeline = WordPipeline.new [Filters::Database, Filters::Wikipedia, Filters::Ai]
+  "output => #{pipeline.call(word)}"
 end
 
 get '/wikipedia' do
@@ -39,11 +44,11 @@ post '/linebot/callback' do
     data = Word.where(word: word).first
     if data.nil?
       data = Wikipedia.new(word)
-      msg['content']['text'] = data.description[0, 50] + "…\n" + data.url
+      msg['content']['text'] = data.description[0, 150] + "…\n" + data.url
     else
-      msg['content']['text'] = data.answer
+      msg['content']['text'] = "#{data.answer}\n#{data.url}"
     end
-    
+
     request_content = {
         to: [msg['content']['from']],
         toChannel: 1383378250, # Fixed  value

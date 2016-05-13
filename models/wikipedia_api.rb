@@ -2,16 +2,14 @@ require 'net/http'
 require "addressable/uri"
 require 'json'
 
-class Wikipedia
+class WikipediaApi
 
   attr_reader :description, :url
 
   def initialize(word)
     uri = Addressable::URI.parse("http://wikipedia.simpleapi.net/api?keyword=#{word}&output=json")
     json = Net::HTTP.get(uri)
-    if "null" == json
-      @description = ""
-    else
+    unless "null" == json
       result = JSON.parse(json)
       @description = result[0]['body']
       @url = result[0]['url']
