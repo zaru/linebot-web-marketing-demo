@@ -42,13 +42,9 @@ post '/linebot/callback' do
   params['result'].each do |msg|
 
     word = msg['content']['text']
-    data = Word.where(word: word).first
-    if data.nil?
-      data = Wikipedia.new(word)
-      msg['content']['text'] = data.description[0, 150] + "…\n" + data.url
-    else
-      msg['content']['text'] = "#{data.answer}\n#{data.url}"
-    end
+
+    pipeline = WordPipeline.new [Filters::Database, Filters::Wikipedia, Filters::Ai]
+    msg['content']['text'] = pipeline.call(word)
 
     request_content = {
         to: [msg['content']['from']],
