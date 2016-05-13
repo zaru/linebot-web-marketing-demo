@@ -10,6 +10,7 @@ require 'pry-byebug'
 
 require './models/words.rb'
 require './models/wikipedia_api.rb'
+require './models/docomo_ai.rb'
 require './services/word_pipeline.rb'
 require './services/filters/database.rb'
 require './services/filters/wikipedia.rb'

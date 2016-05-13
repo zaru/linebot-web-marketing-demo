@@ -1,7 +1,8 @@
 module Filters
   class Ai
     def self.call(word)
-      "はぁ〜？"
+      docomo = DocomoAi.new(word)
+      docomo.answer
     end
   end
 end
